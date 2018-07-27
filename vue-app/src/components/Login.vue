@@ -115,7 +115,8 @@
                 }
             })
             .then((response) => {
-                    sessionStorage.setItem('authorization', JSON.stringify(response.body.access_token));
+                    //sessionStorage.setItem('authorization', JSON.stringify(response.body.access_token));
+                    this.$store.state.token = JSON.stringify(response.body.access_token);
                 }, err => {
                     alert("Usuário ou senha inválidos.")
                 }

@@ -3,9 +3,19 @@ import VueRouter from 'vue-router'
 import Login from '@/components/Login.vue'
 import CadastroUsuario from '@/components/CadastroUsuario.vue'
 import VueResource from 'vue-resource';
+import Vuex from 'vuex';
+import store from '@/store/store.js'
 
 Vue.use(VueRouter)
 Vue.use(VueResource);
+
+async function requireAuth (to, from, next) {
+  if (store.state.token == null) {
+    next({ name: 'Login' })
+  } else {
+    next();
+  }
+}
 
 export const routes = [
   {
@@ -17,8 +27,8 @@ export const routes = [
   {
     path: '/cadastrousuario',
     name: 'CadastroUsuario',
-    component: CadastroUsuario,
-    meta: {auth:true}
+    component: CadastroUsuario
+    //beforeEnter: requireAuth
   }
 ]
 
@@ -27,7 +37,3 @@ export default new VueRouter({
   routes,
   linkActiveClass:'active'
 })
-
-
-
-
