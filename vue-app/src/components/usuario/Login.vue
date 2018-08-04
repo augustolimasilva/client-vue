@@ -1,35 +1,30 @@
 <template>
-  <div class="container" id="app">
+  <div class="container" id="app1">
     <div class="row">
       <div class="col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4">
         <div class="panel panel-primary">
           <div class="panel-heading">
-            <h3 class="panel-title">Controle de Vendas</h3>
+            <h3 class="panel-title text-center">Controle de Vendas</h3>
           </div>
           <div class="panel-body">
             <form @submit.prevent="submitLogin" action="/login" method="POST">
-              <div class="form-group has-feedback" v-bind:class="[habilitarBotaoLogin]">
-                <label for="usuario" class="control-label sr-only">Informe seu Usuário.</label>
-                <input ref="txtUsuario" type="text" class="form-control" @input="habilitarBotaoLogin" id="usuario" placeholder="Usuário" autofocus>
-                
+              <div class="form-group">
+                <input ref="txtUsuario" data-toggle="tooltip" title="Informe seu usuário." type="text" class="form-control" id="usuario" placeholder="Usuário" autofocus required>
               </div>
-              <div class="form-group has-feedback" v-bind:class="[habilitarBotaoLogin]">
-                <label for="senha" class="control-label sr-only">Informe sua senha.</label>
-                <input ref="txtSenha" type="password" class="form-control" @input="habilitarBotaoLogin" id="senha" placeholder="Senha"
-                       :pattern="senhaPattern" aria-describedby="senhaHelpSpan">
+              <div class="form-group">
+                <input ref="txtSenha" type="password" data-toggle="tooltip" title="Informe sua senha." class="form-control" id="senha" placeholder="Senha" required>
               </div>
-              <div class="button">
-                <button :disabled="submitBtnDisabled" class="btn btn-md btn-primary btn-block" >Login</button>
+              <div class="form-group">
+                <button :disabled="submitBtnDisabled" class="btn btn-md btn-primary btn-block">Login</button>
               </div>
             </form>
-            <br/>
             <div class="button">
-                <button @click="teste" class="btn btn-md btn-primary btn-block">Cadastre-se</button>
+                <button class="btn btn-md btn-primary btn-block" @click="cadastrarUsuario()">Cadastre-se</button>
             </div>
           </div>
         </div>
       </div>
-    </div>
+  </div>
   </div>
 </template>
 
@@ -59,7 +54,7 @@
         senhaSuccessClass: '',
         usuarioIconClass: '',
         senhaIconClass: '',
-        submitBtnDisabled: true
+        submitBtnDisabled: false,
       }
     },
     methods: {
@@ -83,10 +78,8 @@
           this.submitBtnDisabled = true
         }
       },
-      teste: function(){
-        location.href = '/cadastrousuario';
+      cadastrarUsuario: function(){
         this.$router.push({name: 'CadastroUsuario'});
-        //VueRouter.push({name: 'CadastroUsuario'})
       },
       checkSenhaValidation: function () {
         if (this.$refs.txtSenha.checkValidity()) {
@@ -99,7 +92,15 @@
           this.submitBtnDisabled = true
         }
       },
-      submitLogin: function () {
+      showAlert() {
+        const options = {title: 'Erro', size: 'sm'}
+        this.$dialogs.alert('Usuário ou senha inválidos.', options)
+        .then(res => {
+          this.submitBtnDisabled = false
+          //console.log(res) // {ok: true|false|undefined}
+        })
+      },
+      submitLogin: function() {
         let usuario = this.$refs.txtUsuario.value.trim()
         let senha = this.$refs.txtSenha.value.trim()
         
@@ -115,10 +116,12 @@
                 }
             })
             .then((response) => {
-                    //sessionStorage.setItem('authorization', JSON.stringify(response.body.access_token));
                     this.$store.state.token = JSON.stringify(response.body.access_token);
+                    this.$router.push({name: 'Home'});
                 }, err => {
-                    alert("Usuário ou senha inválidos.")
+                  this.submitBtnDisabled = true
+
+                  this.showAlert();
                 }
             );
       }
@@ -127,12 +130,7 @@
 </script>
 
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+#app1{
   margin-top: 60px;
 }
 </style>

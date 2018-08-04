@@ -1,7 +1,9 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Login from '@/components/Login.vue'
-import CadastroUsuario from '@/components/CadastroUsuario.vue'
+import Login from '@/components/usuario/Login.vue'
+import CadastroUsuario from '@/components/usuario/CadastroUsuario.vue'
+import Home from '@/components/fornecedor/Home.vue'
+import CadastroFornecedor from '@/components/fornecedor/CadastroFornecedor.vue'
 import VueResource from 'vue-resource';
 import Vuex from 'vuex';
 import store from '@/store/store.js'
@@ -29,6 +31,18 @@ export const routes = [
     name: 'CadastroUsuario',
     component: CadastroUsuario
     //beforeEnter: requireAuth
+  },
+  {
+    path: '/cadastrofornecedor',
+    name: 'CadastroFornecedor',
+    component: CadastroFornecedor,
+    beforeEnter: requireAuth
+  },
+  {
+    path: '/home',
+    name: 'Home',
+    component: Home,
+    beforeEnter: requireAuth
   }
 ]
 
