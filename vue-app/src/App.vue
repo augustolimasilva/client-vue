@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <!--<img src="./assets/logo.png">-->
     <Navigation v-show="this.$store.state.token != null"></Navigation>
     <router-view/>
   </div>

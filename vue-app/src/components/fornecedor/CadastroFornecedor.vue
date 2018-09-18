@@ -8,7 +8,7 @@
   <div class="col-md-4 inputGroupContainer">
   <div class="input-group">
   <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-  <input name="nome" v-model="fornecedor.nome" pattern="[a-zA-Z\s]+$" data-toggle="tooltip" title="Informe um nome para o fornecedor" placeholder="Nome" class="form-control" type="text" required>
+  <input name="nome" v-model="fornecedor.nome" autocomplete='name' pattern="[a-zA-Z\s]+$" data-toggle="tooltip" title="Informe um nome para o fornecedor" placeholder="Nome" class="form-control" type="text" required>
     </div>
   </div>
 </div>
@@ -26,7 +26,7 @@
     <div class="col-md-4 inputGroupContainer">
     <div class="input-group">
         <span class="input-group-addon"><i class="glyphicon glyphicon-home"></i></span>
-  <input name="cep" placeholder="CEP" pattern="/^[0-9]{8}$/" v-model="fornecedor.cep" size="8" data-toggle="tooltip" title="Informe o CEP. Ex: 00000000" class="form-control" type="number" required>
+  <input name="cep" placeholder="CEP" autocomplete="postal-code" pattern="/^[0-9]{8}$/" v-model="fornecedor.cep" size="8" data-toggle="tooltip" title="Informe o CEP. Ex: 00000000" class="form-control" type="number" required>
     </div>
 </div>
 </div>
@@ -35,7 +35,7 @@
     <div class="col-md-4 inputGroupContainer">
     <div class="input-group">
         <span class="input-group-addon"><i class="glyphicon glyphicon-home"></i></span>
-  <input name="endereco" ref="endereco" required id="endereco" placeholder="Endereco" v-model="fornecedor.endereco" data-toggle="tooltip" title="Informe um endereço" class="form-control" type="text">
+  <input name="endereco" ref="endereco" required id="endereco" placeholder="Endereco" autocomplete="street-address" v-model="fornecedor.endereco" data-toggle="tooltip" title="Informe um endereço" class="form-control" type="text">
     </div>
   </div>
 </div>
@@ -53,7 +53,7 @@
     <div class="col-md-4 inputGroupContainer">
     <div class="input-group">
         <span class="input-group-addon"><i class="glyphicon glyphicon-home"></i></span>
-  <input name="cidade" id="cidade" required placeholder="Cidade" v-model="fornecedor.cidade" class="form-control" data-toggle="tooltip" title="Informe uma cidade"  type="text">
+  <input name="cidade" id="cidade" required placeholder="Cidade" autocomplete="address-level2" v-model="fornecedor.cidade" class="form-control" data-toggle="tooltip" title="Informe uma cidade"  type="text">
     </div>
   </div>
 </div>
@@ -71,7 +71,7 @@
     <div class="col-md-4 inputGroupContainer">
     <div class="input-group">
         <span class="input-group-addon"><i class="glyphicon glyphicon-home"></i></span>
-  <input name="estado" id="estado" required placeholder="Estado" v-model="fornecedor.estado" class="form-control" data-toggle="tooltip" title="Informe um estado"  type="text">
+  <input name="estado" id="estado" required placeholder="Estado" autocomplete="address-level1" v-model="fornecedor.estado" class="form-control" data-toggle="tooltip" title="Informe um estado"  type="text">
     </div>
   </div>
 </div>
@@ -80,7 +80,7 @@
     <div class="col-md-4 inputGroupContainer">
     <div class="input-group">
         <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
-  <input name="email" placeholder="E-Mail" required v-model="fornecedor.email" class="form-control" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" ata-toggle="tooltip" title="Informe um e-mail" type="email">
+  <input name="email" placeholder="E-Mail" autocomplete="email" required v-model="fornecedor.email" class="form-control" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" ata-toggle="tooltip" title="Informe um e-mail" type="email">
     </div>
   </div>
 </div>
@@ -89,7 +89,7 @@
     <div class="col-md-4 inputGroupContainer">
     <div class="input-group">
         <span class="input-group-addon"><i class="glyphicon glyphicon-earphone"></i></span>
-  <input name="phone" placeholder="Contato" required ata-toggle="tooltip" title="Informe um contato" v-model="fornecedor.contato" class="form-control" type="number">
+  <input name="phone" placeholder="Contato" autocomplete="tel-national" required ata-toggle="tooltip" title="Informe um contato" v-model="fornecedor.contato" class="form-control" type="number">
     </div>
   </div>
 </div>
@@ -124,21 +124,6 @@ export default {
         }
     },
     methods:{
-      carregarEndereco: function(){
-        $.getJSON("https://viacep.com.br/ws/"+ this.fornecedor.cep +"/json/?callback=?", function(dados) {
-                            if (!("erro" in dados)) {
-                              $("#endereco").val(dados.logradouro);
-                              $("#cidade").val(dados.localidade);
-                              $("#bairro").val(dados.bairro);
-                              $("#estado").val(dados.uf);
-
-                              //this.fornecedor.endereco = this.$refs.endereco.value.trim()
-                            }
-                            else {
-                                alert("CEP não encontrado.");
-                            }
-                        });
-      },
       showAlert(msg) {
           const options = {title: 'Alerta', size: 'sm'}
           this.$dialogs.alert(msg, options)
@@ -148,15 +133,27 @@ export default {
           })
         },
       cadastrarFornecedor: function () {
-          this.$http.post('http://localhost:9093/api/providers', this.fornecedor,{
+        let token = this.$store.state.token.substring(1,37);
+
+          this.$http.post('http://localhost:9094/providers/api', this.fornecedor,{
                   headers: {
                       'Content-Type':'application/json',
-                      'Authorization':'Bearer ' + this.$store.state.token
+                      'Authorization':'Bearer ' + token
                   }
               })
               .then((response) => {
                       this.showAlert(JSON.stringify(response.body.mensagem));
-                      //this.$router.push({name: 'Login'});
+                      
+                      this.fornecedor.nome = "";
+                      this.fornecedor.endereco = "";
+                      this.fornecedor.cidade = "";
+                      this.fornecedor.bairro = "";
+                      this.fornecedor.cep = "";
+                      this.fornecedor.estado = "";
+                      this.fornecedor.email = "";
+                      this.fornecedor.contato = "";
+                      this.fornecedor.cnpj = "";
+                      this.fornecedor.numero = "";
                   }, err => {
                       this.showAlert(JSON.stringify(response.body.mensagem));
                   }

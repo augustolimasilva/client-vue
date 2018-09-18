@@ -9,13 +9,13 @@
           <div class="panel-body">
             <form @submit.prevent="cadastrarUsuario" action="/cadastrarUsuario" method="POST">
               <div class="form-group">
-                <input ref="txtUsuario" v-model="usuario.username" data-toggle="tooltip" title="Informe um novo usuário." type="text" class="form-control" id="usuario" placeholder="Usuário" autofocus required>
+                <input ref="txtUsuario" v-model="usuario.username" autocomplete="username" data-toggle="tooltip" title="Informe um novo usuário." type="text" class="form-control" id="usuario" placeholder="Usuário" autofocus required>
               </div>
               <div class="form-group">
-                <input ref="txtEmail" v-model="usuario.email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" data-toggle="tooltip" title="Informe um E-mail válido." type="email" class="form-control" id="email" placeholder="Email" autofocus required>
+                <input ref="txtEmail" v-model="usuario.email" autocomplete="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" data-toggle="tooltip" title="Informe um E-mail válido." type="email" class="form-control" id="email" placeholder="Email" autofocus required>
               </div>
               <div class="form-group">
-                <input ref="txtSenha" v-model="usuario.password" type="password" pattern=".{5,}" data-toggle="tooltip" title="Informe uma senha com no mínimo 5 caracteres." class="form-control" id="senha" placeholder="Senha" required>
+                <input ref="txtSenha" v-model="usuario.password" autocomplete="current-password" type="password" pattern=".{5,}" data-toggle="tooltip" title="Informe uma senha com no mínimo 5 caracteres." class="form-control" id="senha" placeholder="Senha" required>
               </div>
               <div class="form-group">
                 <button class="btn btn-md btn-primary btn-block">Registrar</button>
@@ -51,8 +51,6 @@ export default {
           const options = {title: 'Alerta', size: 'sm'}
           this.$dialogs.alert(msg, options)
           .then(res => {
-            //this.submitBtnDisabled = false
-            //console.log(res) // {ok: true|false|undefined}
           })
         },
         cadastrarUsuario: function () {
@@ -66,7 +64,6 @@ export default {
                       this.usuario.username = "";
                       this.usuario.password = "";
                       this.usuario.email = "";
-                      //this.$router.push({name: 'Login'});
                   }, err => {
                       this.showAlert(JSON.stringify(response.body.mensagem));
                   }
@@ -75,7 +72,6 @@ export default {
       }
 }
 </script>
-
 <style>
 #app2{
   margin-top: 60px;

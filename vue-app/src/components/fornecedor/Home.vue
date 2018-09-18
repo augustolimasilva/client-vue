@@ -1,3 +1,3 @@
 <template>
-    <h1>Teste</h1>
+    <h1>Bem-vindo ao Sistema de Controle de vendas.</h1>
 </template>

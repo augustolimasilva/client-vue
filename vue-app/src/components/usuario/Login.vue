@@ -9,10 +9,10 @@
           <div class="panel-body">
             <form @submit.prevent="submitLogin" action="/login" method="POST">
               <div class="form-group">
-                <input ref="txtUsuario" data-toggle="tooltip" title="Informe seu usuário." type="text" class="form-control" id="usuario" placeholder="Usuário" autofocus required>
+                <input ref="txtUsuario" data-toggle="tooltip" autocomplete="username" title="Informe seu usuário." type="text" class="form-control" id="usuario" placeholder="Usuário" autofocus required>
               </div>
               <div class="form-group">
-                <input ref="txtSenha" type="password" data-toggle="tooltip" title="Informe sua senha." class="form-control" id="senha" placeholder="Senha" required>
+                <input ref="txtSenha" type="password" autocomplete="current-password" data-toggle="tooltip" title="Informe sua senha." class="form-control" id="senha" placeholder="Senha" required>
               </div>
               <div class="form-group">
                 <button :disabled="submitBtnDisabled" class="btn btn-md btn-primary btn-block">Login</button>
@@ -40,7 +40,6 @@
       senhaMessage: {
         type: String,
         required: false,
-        //default: "A senha deve ter entre 5 e 20 caracteres."
       },
       senhaPattern: {
         type: String,
@@ -97,7 +96,6 @@
         this.$dialogs.alert('Usuário ou senha inválidos.', options)
         .then(res => {
           this.submitBtnDisabled = false
-          //console.log(res) // {ok: true|false|undefined}
         })
       },
       submitLogin: function() {
@@ -128,7 +126,6 @@
     }
   }
 </script>
-
 <style>
 #app1{
   margin-top: 60px;
